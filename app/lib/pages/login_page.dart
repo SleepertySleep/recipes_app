@@ -10,6 +10,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  GlobalKey<FormState> _loginFormKey = GlobalKey();
+
+  String? username, password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,17 +57,39 @@ class _LoginPageState extends State<LoginPage> {
       width: MediaQuery.sizeOf(context).width * 0.9,
       height: MediaQuery.sizeOf(context).height * 0.3,
       child: Form(
+        key: _loginFormKey,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextFormField(
+              onSaved: (value) {
+                setState(() {
+                  username = value;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'enter a username';
+                }
+              },
               decoration: InputDecoration(
                 hintText: "Username"
               ),
             ),
             TextFormField(
+              obscureText: true,
+              onSaved: (value) {
+                setState(() {
+                  password = value;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'enter a password';
+                }
+              },
               decoration: InputDecoration(
                   hintText: "Password"
               ),
@@ -79,7 +105,11 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.6,
       child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            if (_loginFormKey.currentState?.validate() ?? false) {
+              _loginFormKey.currentState?.save();
+            }
+          },
           child: Text(
             'Login',
           )
